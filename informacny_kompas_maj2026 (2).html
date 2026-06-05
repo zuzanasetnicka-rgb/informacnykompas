@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informačný Kompas — Globálna situácia za máj 2026</title>
+
+<!-- OG / Social meta tags -->
+<meta property="og:title" content="Informačný Kompas — Globálna situácia za máj 2026">
+<meta property="og:description" content="Mesačný finančný prehľad: S&P 500 na historickom maxime, ropa +49%, inflácia zrýchľuje. Kľúčové dáta z globálnych trhov za máj 2026.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://placehold.co/1200x630/001A9C/FFFFFF?text=Informačný+Kompas+MÁJ+2026">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Informačný Kompas — Máj 2026">
+<meta name="twitter:description" content="S&P 500 na historickom maxime 7 580 USD. Ropa +49,75%. Inflácia USA 3,8%. Mesačný prehľad globálnych trhov.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23001A9C'/><text x='16' y='22' text-anchor='middle' font-size='18' fill='%23FF6648' font-family='serif' font-weight='bold'>K</text></svg>">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:       #001A9C;
+    --coral:      #FF6648;
+    --sky:        #E8EEFF;
+    --peach:      #FFE1D7;
+    --navy-light: #1A30B0;
+    --navy-dark:  #00115E;
+    --coral-dark: #CC4A30;
+    --text-dark:  #000D4A;
+    --text-mid:   #3A4580;
+    --text-muted: #6B76A8;
+    --white:      #FFFFFF;
+    --border:     rgba(0,26,156,0.13);
+    --green:      #2E8A4A;
+    --amber:      #B07010;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--sky);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+  }
+
+  /* ── STICKY HEADER ── */
+  .sticky-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--navy-dark);
+    border-bottom: 2px solid var(--coral);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 48px;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sticky-bar.visible { transform: translateY(0); }
+
+  .sticky-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sticky-badge {
+    background: var(--coral);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    padding: 3px 9px;
+    border-radius: 3px;
+  }
+
+  .sticky-actions { display: flex; gap: 8px; }
+
+  .sticky-btn {
+    background: transparent;
+    border: 1px solid rgba(232,238,255,0.25);
+    color: rgba(232,238,255,0.75);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    padding: 5px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .sticky-btn:hover { background: rgba(232,238,255,0.1); color: var(--white); border-color: rgba(232,238,255,0.5); }
+
+  /* ── MAIN HEADER ── */
+  .header {
+    background: var(--navy);
+    padding: 0 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    min-height: 96px;
+    margin-top: 0;
+  }
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 26px 0;
+  }
+
+  .header-eyebrow {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(232,238,255,0.45);
+    margin-bottom: 5px;
+  }
+
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  .header-subtitle {
+    font-size: 12px;
+    color: rgba(232,238,255,0.45);
+    margin-top: 5px;
+    letter-spacing: 0.06em;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .date-badge {
+    background: var(--coral);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    text-transform: uppercase;
+  }
+
+  /* ── BODY ── */
+  .body {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 40px 48px 64px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── KOMENTÁR ── */
+  .komentár {
+    background: var(--white);
+    border-left: 4px solid var(--coral);
+    padding: 22px 28px;
+    margin-bottom: 32px;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--text-mid);
+    border-radius: 0 8px 8px 0;
+  }
+  .komentár strong { color: var(--navy); font-weight: 500; }
+
+  /* ── GRIDS ── */
+  .two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  .trhy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  .temy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px; }
+  .portfolio-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+
+  /* ── CARDS (base) ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,26,156,0.08); border-color: rgba(0,26,156,0.28); }
+
+  /* ── INFO BOX ── */
+  .info-box { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px; }
+  .info-box h3 {
+    font-size: 9.5px; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--text-muted);
+    margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  }
+  .info-item {
+    font-size: 13px; color: var(--text-mid); padding: 7px 0;
+    border-bottom: 1px solid rgba(0,26,156,0.06);
+    display: flex; align-items: flex-start; gap: 10px; line-height: 1.45;
+  }
+  .info-item:last-child { border-bottom: none; }
+  .info-num {
+    font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+    color: var(--navy); background: var(--sky); padding: 2px 6px; border-radius: 3px;
+    min-width: 24px; text-align: center; margin-top: 1px; flex-shrink: 0;
+  }
+  .risk-item .info-num { color: var(--white); background: var(--coral); }
+
+  /* ── KPI GRID ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 32px; }
+
+  .kpi-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 20px 16px; position: relative; overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,26,156,0.1); border-color: rgba(0,26,156,0.3); }
+  .kpi-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+  .kpi-card.up::after     { background: var(--green); }
+  .kpi-card.down::after   { background: var(--coral); }
+  .kpi-card.warn::after   { background: #E8A020; }
+  .kpi-card.neutral::after{ background: var(--navy); }
+
+  .kpi-label { font-size: 9.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+  .kpi-val { font-family: 'DM Mono', monospace; font-size: 28px; font-weight: 500; color: var(--navy); line-height: 1; margin-bottom: 7px; letter-spacing: -0.02em; }
+  .kpi-delta { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; display: flex; align-items: center; gap: 3px; }
+  .kpi-delta.up   { color: var(--green); }
+  .kpi-delta.down { color: var(--coral-dark); }
+  .kpi-delta.warn { color: var(--amber); }
+  .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+
+  /* ── PROGRESS BARS ── */
+  .progress-wrap { margin-top: 10px; }
+  .progress-label-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+  .progress-track { background: var(--sky); border-radius: 4px; height: 5px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; width: 0; transition: width 1.4s cubic-bezier(0.4,0,0.2,1); }
+  .progress-fill.navy  { background: var(--navy); }
+  .progress-fill.coral { background: var(--coral); }
+  .progress-fill.green { background: var(--green); }
+  .progress-fill.amber { background: #E8A020; }
+
+  /* ── SEMAFOR ── */
+  .sema-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 32px; }
+  .sema-item {
+    background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px 18px; display: flex; align-items: center; gap: 14px;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  }
+  .sema-item:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,26,156,0.08); border-color: rgba(0,26,156,0.28); }
+  .sema-dot { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; }
+  .sema-dot.warn    { background: #FFF3CD; color: var(--amber); }
+  .sema-dot.down    { background: var(--peach); color: var(--coral-dark); }
+  .sema-dot.neutral { background: var(--sky); color: var(--navy); }
+  .sema-info { font-size: 12px; color: var(--text-mid); line-height: 1.55; }
+  .sema-info strong { display: block; font-size: 12.5px; color: var(--navy); font-weight: 500; margin-bottom: 2px; }
+
+  /* ── REGION CARDS ── */
+  .region-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  }
+  .region-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,26,156,0.08); border-color: rgba(0,26,156,0.28); }
+  .region-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .region-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(0,26,156,0.06); font-size: 12.5px; }
+  .region-row:last-child { border-bottom: none; }
+  .region-key { color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em; }
+  .region-val { font-family: 'DM Mono', monospace; font-size: 12.5px; font-weight: 500; color: var(--navy); }
+  .region-val.up   { color: var(--green); }
+  .region-val.down { color: var(--coral-dark); }
+  .region-val.warn { color: var(--amber); }
+
+  /* ── TABLE CARD ── */
+  .table-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px 22px;
+    transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  }
+  .table-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,26,156,0.08); border-color: rgba(0,26,156,0.28); }
+  .table-card h3 { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 500; color: var(--navy); margin-bottom: 14px; }
+
+  .tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .tbl thead th { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; padding: 0 0 9px; text-align: left; border-bottom: 1px solid var(--border); }
+  .tbl thead th:last-child, .tbl td:last-child { text-align: right; }
+  .tbl tbody td { padding: 6px 0; border-bottom: 1px solid rgba(0,26,156,0.06); font-family: 'DM Mono', monospace; font-size: 11.5px; color: var(--text-mid); }
+  .tbl tbody tr:last-child td { border-bottom: none; }
+  .tbl .name-col { font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--navy); font-weight: 400; }
+  .tag-up   { color: var(--green); }
+  .tag-down { color: var(--coral-dark); }
+  .tag-warn { color: var(--amber); }
+
+  /* ── CHART SECTION ── */
+  .chart-section {
+    background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 22px 24px;
+    margin-bottom: 32px;
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .chart-section:hover { box-shadow: 0 6px 24px rgba(0,26,156,0.08); }
+  .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .chart-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 500; color: var(--navy); }
+  .chart-legend { display: flex; gap: 16px; }
+  .chart-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+  .chart-legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* ── TÉMY ── */
+  .tema-item {
+    background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .tema-item:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,26,156,0.08); border-color: var(--navy); }
+  .tema-num { font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 400; color: var(--sky); line-height: 1; min-width: 30px; transition: color 0.18s; }
+  .tema-item:hover .tema-num { color: rgba(0,26,156,0.18); }
+  .tema-text { font-size: 12.5px; line-height: 1.65; color: var(--text-mid); }
+  .tema-text strong { display: block; font-size: 13px; font-weight: 500; color: var(--navy); margin-bottom: 3px; }
+
+  /* ── PORTFÓLIO ── */
+  .portfolio-card {
+    background: var(--peach); border: 1px solid rgba(255,102,72,0.2);
+    border-radius: 10px; padding: 20px 22px;
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .portfolio-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(255,102,72,0.12); }
+  .portfolio-card h3 { font-size: 9.5px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--coral-dark); margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,102,72,0.2); }
+  .portfolio-row-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,102,72,0.12); font-size: 13px; color: var(--navy-dark); }
+  .portfolio-row-item:last-child { border-bottom: none; }
+  .portfolio-val { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 500; color: var(--green); }
+
+  /* ── AUTHOR / CTA ── */
+  .author-section {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 32px 36px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .author-left { display: flex; align-items: center; gap: 18px; }
+
+  .author-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--coral); display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700;
+    color: var(--white); flex-shrink: 0;
+  }
+
+  .author-info { color: var(--white); }
+  .author-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 3px; }
+  .author-role { font-size: 12px; color: rgba(232,238,255,0.55); letter-spacing: 0.05em; }
+  .author-desc { font-size: 12.5px; color: rgba(232,238,255,0.7); margin-top: 5px; line-height: 1.5; max-width: 480px; }
+
+  .author-actions { display: flex; gap: 10px; flex-shrink: 0; }
+
+  .btn-primary {
+    background: var(--coral); color: var(--white); border: none;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    padding: 10px 22px; border-radius: 6px; cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary:hover { background: var(--coral-dark); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: transparent; color: rgba(232,238,255,0.8);
+    border: 1px solid rgba(232,238,255,0.25);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
+    padding: 10px 22px; border-radius: 6px; cursor: pointer;
+    transition: all 0.2s; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-secondary:hover { background: rgba(232,238,255,0.1); border-color: rgba(232,238,255,0.5); color: var(--white); transform: translateY(-1px); }
+
+  /* ── SHARE TOAST ── */
+  .share-toast {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--navy-dark); color: var(--white);
+    font-size: 13px; padding: 12px 22px; border-radius: 8px;
+    border-left: 3px solid var(--coral); z-index: 200;
+    transition: transform 0.3s ease;
+    white-space: nowrap;
+  }
+  .share-toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--navy-dark);
+    padding: 24px 48px;
+    font-size: 10px;
+    color: rgba(232,238,255,0.4);
+    line-height: 1.8;
+    border-top: 3px solid var(--coral);
+  }
+  .footer strong { color: rgba(232,238,255,0.6); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; font-size: 9px; }
+
+  /* ── PRINT ── */
+  @media print {
+    .sticky-bar, .share-toast, .author-actions, .btn-primary, .btn-secondary { display: none !important; }
+    body { background: white; }
+    .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .kpi-card::after, .komentár { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .card, .kpi-card, .region-card, .table-card, .tema-item, .sema-item { break-inside: avoid; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .header { padding: 0 20px; }
+    .body { padding: 24px 20px 40px; }
+    .footer { padding: 20px; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .two-col, .three-col, .trhy-grid, .temy-grid, .portfolio-row, .sema-row { grid-template-columns: 1fr; }
+    .header-title { font-size: 22px; }
+    .author-section { flex-direction: column; align-items: flex-start; }
+    .author-actions { flex-wrap: wrap; }
+    .sticky-bar { padding: 0 16px; }
+    .chart-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STICKY BAR -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="sticky-title">
+    Informačný Kompas
+    <span class="sticky-badge">MÁJ 2026</span>
+  </div>
+  <div class="sticky-actions">
+    <button class="sticky-btn" onclick="sharePage()">↗ Zdieľať</button>
+    <button class="sticky-btn" onclick="window.print()">⎙ Tlačiť</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="share-toast" id="shareToast">✓ &nbsp;Link skopírovaný do schránky</div>
+
+<!-- MAIN HEADER -->
+<header class="header" id="mainHeader">
+  <div class="header-left">
+    <div class="header-eyebrow">Informačný Kompas</div>
+    <div class="header-title">Globálna situácia</div>
+    <div class="header-subtitle">Mesačný finančný prehľad &nbsp;·&nbsp; Finančné trhy &nbsp;·&nbsp; Ekonomika</div>
+  </div>
+  <div class="header-right">
+    <div class="date-badge">MÁJ 2026</div>
+  </div>
+</header>
+
+<div class="body">
+
+  <!-- ZHRNUTIE -->
+  <div class="section-label">Zhrnutie mesiaca</div>
+
+  <div class="komentár">
+    V máji 2026 pôsobila svetová ekonomika pod tlakom dopadov <strong>drahšej ropy</strong> nevyrovnane a opatrne. Rast vo viacerých veľkých ekonomikách strácal dych — firmy hlásili slabnúci dopyt, vyššie náklady a menšiu ochotu rozširovať výrobu. <strong>Inflácia zostáva hlavným problémom:</strong> ceny energií, potravín a služieb tlačia na domácnosti aj firmy. Centrálne banky nechcú riskovať nový inflačný tlak, no zároveň musia vnímať spomalenie ekonomiky. <strong>Trh práce sa začal ochladzovať</strong> — v niektorých krajinách pribúdali správy o slabšom prijímaní zamestnancov a prepúšťaní. Celkový obraz za máj 2026 je jasný: svetová ekonomika nerástla prudko, inflácia zostáva vysoká, sadzby neklesali a istota zamestnania sa postupne znižuje.
+  </div>
+
+  <!-- HLAVNÉ BODY + RIZIKÁ -->
+  <div class="two-col">
+    <div class="info-box">
+      <h3>Hlavné body situácie</h3>
+      <div class="info-item"><span class="info-num">01</span><span>Vojna v Iráne – rast ceny ropy a reálna hrozba energetickej krízy</span></div>
+      <div class="info-item"><span class="info-num">02</span><span>Globálna ekonomika spomaľuje rast, zatiaľ žiadna prudká kríza</span></div>
+      <div class="info-item"><span class="info-num">03</span><span>Úrokové sadzby tak skoro klesať nebudú, ECB signalizuje rast sadzieb</span></div>
+    </div>
+    <div class="info-box">
+      <h3>Možné riziká ďalšieho vývoja</h3>
+      <div class="info-item risk-item"><span class="info-num">01</span><span>Predlžovanie konfliktu v Iráne a energetická kríza</span></div>
+      <div class="info-item risk-item"><span class="info-num">02</span><span>Prudké spomalenie globálnej ekonomiky</span></div>
+      <div class="info-item risk-item"><span class="info-num">03</span><span>Opätovné zvyšovanie úrokových sadzieb</span></div>
+    </div>
+  </div>
+
+  <!-- KPI KARTY -->
+  <div class="section-label">Kľúčové indikátory</div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card down">
+      <div class="kpi-label">Ropa Brent</div>
+      <div class="kpi-val" data-target="91" data-decimals="0" data-suffix=" USD">0</div>
+      <div class="kpi-delta down">▲ +49,75% YTD</div>
+      <div class="kpi-sub">USD / barel</div>
+      <div class="progress-wrap">
+        <div class="progress-label-row"><span>0</span><span>115 max</span></div>
+        <div class="progress-track"><div class="progress-fill coral" data-width="79"></div></div>
+      </div>
+    </div>
+    <div class="kpi-card up">
+      <div class="kpi-label">S&P 500</div>
+      <div class="kpi-val" data-target="7580" data-decimals="0" data-suffix="">0</div>
+      <div class="kpi-delta up">▲ +10,74% YTD</div>
+      <div class="kpi-sub">historické maximum</div>
+      <div class="progress-wrap">
+        <div class="progress-label-row"><span>6 800</span><span>7 600</span></div>
+        <div class="progress-track"><div class="progress-fill navy" data-width="97"></div></div>
+      </div>
+    </div>
+    <div class="kpi-card down">
+      <div class="kpi-label">Inflácia USA</div>
+      <div class="kpi-val" data-target="3.8" data-decimals="1" data-suffix="%">0%</div>
+      <div class="kpi-delta down">▲ zrýchľuje</div>
+      <div class="kpi-sub">oček. rast na 4,2%</div>
+      <div class="progress-wrap">
+        <div class="progress-label-row"><span>0%</span><span>cieľ 2%</span></div>
+        <div class="progress-track"><div class="progress-fill coral" data-width="76"></div></div>
+      </div>
+    </div>
+    <div class="kpi-card neutral">
+      <div class="kpi-label">Zlato</div>
+      <div class="kpi-val" data-target="4541" data-decimals="0" data-suffix="">0</div>
+      <div class="kpi-delta warn">▲ +5,04% YTD</div>
+      <div class="kpi-sub">USD / unca</div>
+      <div class="progress-wrap">
+        <div class="progress-label-row"><span>4 300</span><span>4 600</span></div>
+        <div class="progress-track"><div class="progress-fill amber" data-width="80"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEMAFOR -->
+  <div class="section-label">Makroekonomický semafor</div>
+
+  <div class="sema-row">
+    <div class="sema-item">
+      <div class="sema-dot warn">⚠</div>
+      <div class="sema-info"><strong>Ekonomický mix</strong>Aktuálny rast 2,52% vs. 10R priemer 3,5% — pod dlhodobým trendom</div>
+    </div>
+    <div class="sema-item">
+      <div class="sema-dot warn">↓</div>
+      <div class="sema-info"><strong>Trend / líder</strong>Globálne PMI spomaľujú, biz. aktivita klesá pod hranicu 50</div>
+    </div>
+    <div class="sema-item">
+      <div class="sema-dot down">!</div>
+      <div class="sema-info"><strong>Riziková prirážka</strong>Rastú rizikové prémie, úverová likvidita pod tlakom</div>
+    </div>
+  </div>
+
+  <!-- GRAFY -->
+  <div class="section-label">Vývoj trhov — posledných 6 mesiacov</div>
+
+  <div class="two-col" style="margin-bottom:32px;">
+    <div class="chart-section" style="margin-bottom:0;">
+      <div class="chart-header">
+        <div class="chart-title">S&P 500 &amp; Nikkei 225 (relatívny index)</div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#001A9C;"></div>S&P 500</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#FF6648;"></div>Nikkei 225</div>
+        </div>
+      </div>
+      <div style="position:relative;height:200px;">
+        <canvas id="stockChart" role="img" aria-label="Vývoj S&P 500 a Nikkei 225 za posledných 6 mesiacov">S&P 500 rástol z 6 850 na 7 580. Nikkei 225 rástol z 45 000 na 66 330.</canvas>
+      </div>
+    </div>
+    <div class="chart-section" style="margin-bottom:0;">
+      <div class="chart-header">
+        <div class="chart-title">Ropa Brent &amp; Zlato (USD)</div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#001A9C;"></div>Zlato (÷10)</div>
+          <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#FF6648;"></div>Ropa Brent</div>
+        </div>
+      </div>
+      <div style="position:relative;height:200px;">
+        <canvas id="commodChart" role="img" aria-label="Vývoj ropy Brent a zlata za posledných 6 mesiacov">Ropa rástla z 61 na 91 USD. Zlato rástlo z 4 320 na 4 541 USD.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- GLOBÁLNA EKONOMIKA -->
+  <div class="section-label">Globálna ekonomika</div>
+
+  <div class="three-col">
+    <div class="region-card">
+      <div class="region-title">Eurozóna</div>
+      <div class="region-row"><span class="region-key">Inflácia</span><span class="region-val down">3,2% ▲</span></div>
+      <div class="region-row"><span class="region-key">HDP 2026 (oček.)</span><span class="region-val warn">0,9%</span></div>
+      <div class="region-row"><span class="region-key">ECB sadzba</span><span class="region-val">2,15%</span></div>
+      <div class="region-row"><span class="region-key">Oček. jún (ECB)</span><span class="region-val down">2,40% ▲</span></div>
+      <div class="region-row"><span class="region-key">Nezamestnanosť</span><span class="region-val">6,3%</span></div>
+      <div class="region-row"><span class="region-key">FR / ES nezam.</span><span class="region-val warn">8,1% / 11%</span></div>
+    </div>
+    <div class="region-card">
+      <div class="region-title">USA</div>
+      <div class="region-row"><span class="region-key">Inflácia</span><span class="region-val down">3,8% ▲</span></div>
+      <div class="region-row"><span class="region-key">HDP 1Q26</span><span class="region-val warn">+1,6%</span></div>
+      <div class="region-row"><span class="region-key">FED sadzba</span><span class="region-val">3,75%</span></div>
+      <div class="region-row"><span class="region-key">Oček. zmena</span><span class="region-val warn">→ do 2027</span></div>
+      <div class="region-row"><span class="region-key">Nezamestnanosť</span><span class="region-val up">4,3%</span></div>
+      <div class="region-row"><span class="region-key">10R dlhopisy</span><span class="region-val">4,45%</span></div>
+    </div>
+    <div class="region-card">
+      <div class="region-title">Ázia</div>
+      <div class="region-row"><span class="region-key">Čína HDP</span><span class="region-val up">stabilný</span></div>
+      <div class="region-row"><span class="region-key">Japonsko HDP</span><span class="region-val warn">+0,5%</span></div>
+      <div class="region-row"><span class="region-key">PBOC sadzba</span><span class="region-val">3,0%</span></div>
+      <div class="region-row"><span class="region-key">BOJ sadzba</span><span class="region-val">0,75%</span></div>
+      <div class="region-row"><span class="region-key">Inflácia Čína</span><span class="region-val up">1,2%</span></div>
+      <div class="region-row"><span class="region-key">Inflácia Japonsko</span><span class="region-val">1,4%</span></div>
+    </div>
+  </div>
+
+  <!-- FINANČNÉ TRHY -->
+  <div class="section-label">Finančné trhy — indexy &amp; komodity &nbsp;<span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:400;letter-spacing:0.08em;">k 29.5.2026</span></div>
+
+  <div class="trhy-grid">
+    <div class="table-card">
+      <h3>Akciové indexy</h3>
+      <table class="tbl">
+        <thead><tr><th>Index</th><th>Cena</th><th>Mena</th><th>YTD %</th></tr></thead>
+        <tbody>
+          <tr><td class="name-col">S&P 500</td><td>7 580</td><td>USD</td><td class="tag-up">+10,74%</td></tr>
+          <tr><td class="name-col">Euro Stoxx 50</td><td>6 051</td><td>EUR</td><td class="tag-up">+4,40%</td></tr>
+          <tr><td class="name-col">DAX</td><td>25 105</td><td>EUR</td><td class="tag-up">+2,51%</td></tr>
+          <tr><td class="name-col">FTSE 100</td><td>10 409</td><td>GBP</td><td class="tag-up">+4,81%</td></tr>
+          <tr><td class="name-col">Nikkei 225</td><td>66 330</td><td>JPY</td><td class="tag-up">+31,77%</td></tr>
+          <tr><td class="name-col">Bitcoin</td><td>73 384</td><td>USD</td><td class="tag-down">−16,15%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-card">
+      <h3>Dlhopisy &amp; komodity</h3>
+      <table class="tbl">
+        <thead><tr><th>Nástroj</th><th>Výnos / Cena</th><th>Zmena YTD</th></tr></thead>
+        <tbody>
+          <tr><td class="name-col">US 10R dlhopisy</td><td>4,45%</td><td class="tag-down">+0,30%</td></tr>
+          <tr><td class="name-col">US 2R dlhopisy</td><td>4,01%</td><td class="tag-down">+0,56%</td></tr>
+          <tr><td class="name-col">GER 10R dlhopisy</td><td>2,93%</td><td class="tag-warn">+0,07%</td></tr>
+          <tr><td class="name-col">SVK 10R dlhopisy</td><td>3,56%</td><td class="tag-warn">+0,03%</td></tr>
+          <tr><td class="name-col">Ropa Brent</td><td>91,12 USD</td><td class="tag-down">+49,75%</td></tr>
+          <tr><td class="name-col">Zlato</td><td>4 541 USD</td><td class="tag-up">+5,04%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TOP MEDIÁLNE TÉMY -->
+  <div class="section-label">Top mediálne témy mesiaca</div>
+
+  <div class="temy-grid">
+    <div class="tema-item"><span class="tema-num">01</span><div class="tema-text"><strong>Irán &amp; ropný šok</strong>Geopolitický konflikt ovplyvňuje cenu ropy, infláciu, dlhopisy aj akcie. Z geopolitického rizika sa stal makroekonomický problém pre celý svet.</div></div>
+    <div class="tema-item"><span class="tema-num">02</span><div class="tema-text"><strong>Výpredaj dlhopisov</strong>Rast výnosov a pokles cien — investori rátajú s tým, že sadzby zostanú vysoké dlhšie. Dlhopisy zrkadlia obavy z inflácie.</div></div>
+    <div class="tema-item"><span class="tema-num">03</span><div class="tema-text"><strong>Sadzby „vyššie dlhšie"</strong>Fed, ECB aj ďalšie centrálne banky — kľúčový zdroj neistoty. Žiadne rýchle uvoľnenie menovej politiky sa neočakáva.</div></div>
+    <div class="tema-item"><span class="tema-num">04</span><div class="tema-text"><strong>Riziko stagflácie</strong>Kombinácia slabšieho rastu a zvýšenej inflácie — pre investorov nepríjemný scenár, ktorý znižuje priestor CB na podporu ekonomiky.</div></div>
+    <div class="tema-item"><span class="tema-num">05</span><div class="tema-text"><strong>Boom umelej inteligencie</strong>AI akcie a polovodiče ťahajú indexy nahor. Obavy z príliš vysokej koncentrácie v úzkej skupike tech spoločností.</div></div>
+    <div class="tema-item"><span class="tema-num">06</span><div class="tema-text"><strong>Slovensko: inflácia 3,9%</strong>Rast cien pohonných látok, dopravy a energií. Ekonomický rast SR na 0,8% — fiškálna konsolidácia brzdí domáci dopyt.</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PORTFÓLIO -->
+  <div class="section-label">Portfólio výnosy</div>
+
+  <div class="portfolio-row">
+    <div class="portfolio-card">
+      <h3>Odhadované čisté výnosy k 2.6.2026</h3>
+      <div class="portfolio-row-item"><span>Bezpečný prístav – peňažný trh</span><span class="portfolio-val">1,59% p.a.</span></div>
+      <div class="portfolio-row-item"><span>Dlhopisová tranža 2029</span><span class="portfolio-val">2,50% p.a.</span></div>
+    </div>
+    <div class="portfolio-card">
+      <h3>Výkonnosť akciového portfólia</h3>
+      <div class="portfolio-row-item"><span>Za máj 2026</span><span class="portfolio-val">+13,9%</span></div>
+      <div class="portfolio-row-item"><span>Posledných 5 rokov p.a.</span><span class="portfolio-val">+10,4%</span></div>
+    </div>
+  </div>
+
+  <!-- AUTHOR / CTA -->
+  <div class="section-label">Autor správy</div>
+
+  <div class="author-section">
+    <div class="author-left">
+      <div class="author-avatar">IK</div>
+      <div class="author-info">
+        <div class="author-name">Informačný Kompas</div>
+        <div class="author-role">Finančný poradca · OVB Allfinanz Slovensko</div>
+        <div class="author-desc">Každý mesiac ti prinášam prehľad toho najdôležitejšieho z globálnych trhov — jasne, zrozumiteľne, bez zbytočného šumu.</div>
+      </div>
+    </div>
+    <div class="author-actions">
+      <a href="https://www.instagram.com/zuzanasetnicka/" target="_blank" class="btn-secondary">📷 Instagram</a>
+      <a href="mailto:setnickazuzana@ovbmail.eu" class="btn-primary">✉ Kontaktuj ma</a>
+    </div>
+  </div>
+
+</div><!-- end body -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <strong>Disclaimer</strong><br>
+  S investovaním do finančných nástrojov je spojené riziko a doterajší výnos nie je zárukou budúcich výnosov. Hodnota investície môže rovnako rásť, ako aj klesať. Tento materiál nepredstavuje osobné odporúčanie na kúpu, predaj alebo podržanie finančných nástrojov, ale slúži výlučne ako vzdelávacia a informačná pomôcka. Materiál nepredstavuje reklamné ani iné marketingové oznámenie. OVB Allfinanz Slovensko, a. s.<br><br>
+  <span style="opacity:0.55;">Zdroje: yahoo.com · cnbc.com · ft.com · yardeni.com · wsj.com · tradingeconomics.com · cnn.com · fred.stlouisfed.org · amundi.com · morningstar.com · imf.org · ec.europa.eu · nbs.sk</span>
+</footer>
+
+<script>
+// ── STICKY BAR ──
+const stickyBar = document.getElementById('stickyBar');
+const mainHeader = document.getElementById('mainHeader');
+const observer = new IntersectionObserver(([e]) => {
+  stickyBar.classList.toggle('visible', !e.isIntersecting);
+}, { threshold: 0 });
+observer.observe(mainHeader);
+
+// ── COUNTER ANIMATION ──
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.target);
+  const decimals = parseInt(el.dataset.decimals) || 0;
+  const suffix = el.dataset.suffix || '';
+  const duration = 1200;
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    const val = target * ease;
+    const formatted = decimals > 0
+      ? val.toFixed(decimals).replace('.', ',')
+      : Math.round(val).toLocaleString('sk-SK');
+    el.textContent = formatted + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// ── PROGRESS BARS ──
+function animateProgress(el) {
+  const w = el.dataset.width;
+  setTimeout(() => { el.style.width = w + '%'; }, 100);
+}
+
+// ── INTERSECTION OBSERVER for animations ──
+const animObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const counters = entry.target.querySelectorAll('[data-target]');
+      counters.forEach(animateCounter);
+      const bars = entry.target.querySelectorAll('.progress-fill[data-width]');
+      bars.forEach(animateProgress);
+      animObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.kpi-grid').forEach(el => animObserver.observe(el));
+
+// ── SHARE ──
+function sharePage() {
+  const url = window.location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(showToast);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast();
+  }
+}
+
+function showToast() {
+  const t = document.getElementById('shareToast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── CHARTS ──
+window.addEventListener('load', () => {
+  const months = ['Dec 25','Jan 26','Feb 26','Mar 26','Apr 26','Máj 26'];
+
+  // Stock chart
+  new Chart(document.getElementById('stockChart'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'S&P 500',
+          data: [6850, 6920, 6740, 6600, 7100, 7580],
+          borderColor: '#001A9C',
+          backgroundColor: 'rgba(0,26,156,0.06)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#001A9C',
+          fill: true,
+          tension: 0.4
+        },
+        {
+          label: 'Nikkei (÷100)',
+          data: [450, 462, 448, 440, 540, 663],
+          borderColor: '#FF6648',
+          backgroundColor: 'rgba(255,102,72,0.06)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#FF6648',
+          fill: true,
+          tension: 0.4,
+          borderDash: [5,3]
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(0,26,156,0.06)' }, ticks: { font: { size: 10, family: "'DM Mono'" }, color: '#6B76A8' } },
+        y: { grid: { color: 'rgba(0,26,156,0.06)' }, ticks: { font: { size: 10, family: "'DM Mono'" }, color: '#6B76A8' } }
+      }
+    }
+  });
+
+  // Commodity chart
+  new Chart(document.getElementById('commodChart'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: 'Zlato (÷10)',
+          data: [432, 437, 441, 440, 448, 454],
+          borderColor: '#001A9C',
+          backgroundColor: 'rgba(0,26,156,0.06)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#001A9C',
+          fill: true,
+          tension: 0.4
+        },
+        {
+          label: 'Ropa Brent',
+          data: [61, 65, 72, 85, 108, 91],
+          borderColor: '#FF6648',
+          backgroundColor: 'rgba(255,102,72,0.06)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: '#FF6648',
+          fill: true,
+          tension: 0.4,
+          borderDash: [5,3]
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(0,26,156,0.06)' }, ticks: { font: { size: 10, family: "'DM Mono'" }, color: '#6B76A8' } },
+        y: { grid: { color: 'rgba(0,26,156,0.06)' }, ticks: { font: { size: 10, family: "'DM Mono'" }, color: '#6B76A8' } }
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
